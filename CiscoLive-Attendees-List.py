@@ -3,14 +3,13 @@ import json
 from collections import defaultdict
 
 input_file = "BRKENT-3115.csv"
-output_file = "output.json"
+output_file = "BRKENT-3115-Visualize-Data.json"
 
 job_title_data = defaultdict(lambda: {"companies": defaultdict(int)})
 session_codes = set()
 
-with open("BRKENT-3115.csv", newline='', encoding='utf-8') as csvfile:
+with open(input_file, newline='', encoding='utf-8-sig') as csvfile:
     reader = csv.DictReader(csvfile)
-    print(repr(reader.fieldnames))  # Shows exact header names including hidden characters
 
     for row in reader:
         job_title = row["JOB TITLE"].strip()
