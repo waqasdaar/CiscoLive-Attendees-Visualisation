@@ -1,16 +1,48 @@
-# This is a sample Python script.
+import csv
+import json
+import os
+from collections import defaultdict
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+input_file = "BRKENT-3115.csv"  # Change this to your CSV file path
+output_file = "output.json"  # Single output JSON file
 
+job_title_data = defaultdict(lambda: {"job_title": "", "companies": defaultdict(list)})
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+with open(input_file, newline='', encoding='utf-8') as csvfile:
+    reader = csv.DictReader(csvfile)
 
+    for row in reader:
+        job_title = row["JOB TITLE"].strip()
+        company = row["COMPANY NAME"].strip()
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+        job_title_data[job_title]["job_title"] = job_title
+        job_title_data[job_title]["companies"][company].append({
+            "session_code": row["SESSION CODE"].strip(),
+            "first_name": row["FIRST NAME"].strip(),
+            "last_name": row["LAST NAME"].strip()
+        })
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Build the single unified JSON structure
+output = {
+    "total_job_titles": len(job_title_data),
+    "job_titles": [
+        {
+            "job_title": job_title,
+            "total_companies": len(data["companies"]),
+            "companies": [
+                {
+                    "company_name": company,
+                    "total_members": len(members),
+                    "members": members
+                }
+                for company, members in sorted(data["companies"].items())
+            ]
+        }
+        for job_title, data in sorted(job_title_data.items())
+    ]
+}
+
+with open(output_file, "w", encoding="utf-8") as jsonfile:
+    json.dump(output, jsonfile, indent=4)
+
+print(f"Done! JSON file created: {output_file}")
