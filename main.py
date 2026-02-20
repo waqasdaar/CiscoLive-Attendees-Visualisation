@@ -1,29 +1,27 @@
 import csv
 import json
-import os
 from collections import defaultdict
 
-input_file = "BRKENT-3115.csv"  # Change this to your CSV file path
-output_file = "output.json"  # Single output JSON file
+input_file = "BRKENT-3115.csv"
+output_file = "output.json"
 
-job_title_data = defaultdict(lambda: {"job_title": "", "companies": defaultdict(list)})
+job_title_data = defaultdict(lambda: {"companies": defaultdict(int)})
+session_codes = set()
 
-with open(input_file, newline='', encoding='utf-8') as csvfile:
+with open("BRKENT-3115.csv", newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
+    print(repr(reader.fieldnames))  # Shows exact header names including hidden characters
 
     for row in reader:
         job_title = row["JOB TITLE"].strip()
         company = row["COMPANY NAME"].strip()
+        session_codes.add(row["SESSION CODE"].strip())
 
-        job_title_data[job_title]["job_title"] = job_title
-        job_title_data[job_title]["companies"][company].append({
-            "session_code": row["SESSION CODE"].strip(),
-            "first_name": row["FIRST NAME"].strip(),
-            "last_name": row["LAST NAME"].strip()
-        })
+        job_title_data[job_title]["companies"][company] += 1
 
 # Build the single unified JSON structure
 output = {
+    "session_codes": sorted(list(session_codes)),
     "total_job_titles": len(job_title_data),
     "job_titles": [
         {
@@ -32,10 +30,9 @@ output = {
             "companies": [
                 {
                     "company_name": company,
-                    "total_members": len(members),
-                    "members": members
+                    "total_members": count
                 }
-                for company, members in sorted(data["companies"].items())
+                for company, count in sorted(data["companies"].items())
             ]
         }
         for job_title, data in sorted(job_title_data.items())
