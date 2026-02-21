@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cisco Live — Attendees Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cisco-blue:      #049fd9;
+      --cisco-blue-dk:   #00476b;
+      --cisco-blue-mid:  #0272a2;
+      --cisco-blue-lt:   #e3f4fb;
+      --cisco-blue-pale: #f0f9fd;
+      --cisco-teal:      #00c2b3;
+      --cisco-teal-lt:   #e0faf8;
+      --cisco-green:     #6cc04a;
+      --cisco-green-lt:  #eef8e8;
+      --cisco-orange:    #ff7300;
+      --cisco-orange-lt: #fff3e8;
+      --cisco-red:       #e2231a;
+      --cisco-violet:    #7b5ea7;
+
+      --bg:        #eef6fb;
+      --surface:   #ffffff;
+      --surface2:  #f6fafd;
+      --border:    #cce5f2;
+      --border2:   #aed4e8;
+      --text:      #0d2233;
+      --text2:     #2d5068;
+      --muted:     #6b8fa6;
+      --shadow-sm: 0 2px 8px rgba(4,159,217,0.08);
+      --shadow-md: 0 4px 20px rgba(4,159,217,0.12);
+      --shadow-lg: 0 8px 36px rgba(4,159,217,0.18);
+
+      --sans:   'Nunito Sans', sans-serif;
+      --mono:   'JetBrains Mono', monospace;
+
+      /* Spring CSS easing fallback */
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --smooth: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated gradient mesh */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 900px 700px at -5% -10%, rgba(4,159,217,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 700px 600px at 105% 110%, rgba(0,194,179,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 500px 500px at 50% 50%,  rgba(108,192,74,0.03) 0%, transparent 70%);
+    }
+
+    /* ── NAV ── */
+    .topnav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 0 rgba(4,159,217,0.06), var(--shadow-sm);
+      padding: 0 36px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 62px;
+    }
+    .nav-left  { display: flex; align-items: center; gap: 14px; }
+    .nav-sep   { width: 1px; height: 26px; background: var(--border2); }
+    .nav-title { font-size: 15px; font-weight: 800; color: var(--cisco-blue-dk); letter-spacing: -0.2px; }
+    .nav-title span { color: var(--cisco-blue); }
+    .nav-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, var(--cisco-blue-lt), var(--cisco-teal-lt));
+      border: 1px solid rgba(4,159,217,0.2);
+      color: var(--cisco-blue-mid); font-family: var(--mono);
+      font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; padding: 5px 13px; border-radius: 20px;
+    }
+    .pill-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cisco-teal);
+      animation: pulse-dot 2s ease infinite;
+    }
+    @keyframes pulse-dot { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(0.6);opacity:0.4;} }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      padding: 52px 36px 36px; max-width: 1180px; margin: 0 auto;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 14px; font-family: var(--mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--cisco-blue-mid);
+      margin-bottom: 20px; box-shadow: var(--shadow-sm);
+      animation: spring-in 0.6s var(--spring) both;
+    }
+    h1.hero-title {
+      font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 900;
+      line-height: 1.06; letter-spacing: -1.5px; color: var(--cisco-blue-dk);
+      animation: spring-in 0.65s 0.05s var(--spring) both;
+    }
+    .grad {
+      background: linear-gradient(105deg, var(--cisco-blue) 0%, var(--cisco-teal) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      margin-top: 12px; font-family: var(--mono); font-size: 11px;
+      color: var(--muted); letter-spacing: 1px;
+      animation: spring-in 0.65s 0.1s var(--spring) both;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      position: relative; z-index: 1;
+      max-width: 1180px; margin: 0 auto;
+      padding: 0 36px 100px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: var(--shadow-md);
+      overflow: hidden; margin-bottom: 24px;
+    }
+    .card-stripe {
+      height: 4px;
+      background: linear-gradient(90deg, var(--cisco-blue-dk) 0%, var(--cisco-blue) 45%, var(--cisco-teal) 100%);
+    }
+    .card-hdr {
+      padding: 18px 26px;
+      background: linear-gradient(135deg, var(--cisco-blue-dk) 0%, var(--cisco-blue-mid) 100%);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .card-hdr-ico {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center; color: #fff;
+    }
+    .card-hdr-title { font-size: 14px; font-weight: 800; color: #fff; }
+    .card-hdr-sub   { font-size: 11px; color: rgba(255,255,255,0.65); font-family: var(--mono); margin-top: 2px; }
+    .card-body { padding: 26px; }
+
+    /* ── DROP ZONE ── */
+    .drop-zone {
+      border: 2px dashed var(--border2); border-radius: 10px;
+      padding: 50px 32px; text-align: center; cursor: pointer;
+      position: relative; background: var(--surface2);
+      transition: all 0.3s var(--smooth);
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--cisco-blue); background: var(--cisco-blue-pale);
+      transform: translateY(-3px) scale(1.005); box-shadow: var(--shadow-lg);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-ring {
+      width: 68px; height: 68px;
+      background: linear-gradient(135deg, var(--cisco-blue-lt), var(--cisco-teal-lt));
+      border: 2px solid rgba(4,159,217,0.25); border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px; color: var(--cisco-blue);
+      transition: transform 0.35s var(--spring);
+    }
+    .drop-zone:hover .upload-ring { transform: translateY(-8px) rotate(-3deg) scale(1.08); }
+    .drop-title { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+    .drop-hint  { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+    .file-ok {
+      display: none; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 14px; padding: 10px 18px;
+      background: var(--cisco-green-lt); border: 1px solid rgba(108,192,74,0.35);
+      border-radius: 8px; font-family: var(--mono); font-size: 11px; font-weight: 600; color: #2e6b18;
+    }
+    .file-ok.show { display: flex; }
+    .err-box {
+      display: none; margin-top: 14px; padding: 12px 16px;
+      background: #fff2f2; border: 1px solid rgba(226,35,26,0.25);
+      border-left: 4px solid var(--cisco-red); border-radius: 8px;
+      font-family: var(--mono); font-size: 11px; color: var(--cisco-red);
+    }
+    .err-box.show { display: block; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      border: none; border-radius: 9px; cursor: pointer;
+      font-family: var(--sans); font-weight: 700; letter-spacing: 0.2px;
+      transition: all 0.25s var(--smooth); position: relative; overflow: hidden;
+    }
+    .btn:active { transform: scale(0.97) !important; }
+
+    .btn-primary {
+      width: 100%; padding: 16px 28px; font-size: 14px; margin-top: 20px;
+      background: linear-gradient(135deg, var(--cisco-blue-dk), var(--cisco-blue));
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(4,159,217,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(4,159,217,0.45); }
+    .btn-primary:disabled { opacity: 0.38; cursor: not-allowed; transform: none !important; }
+    .btn-teal    { padding: 9px 18px; font-size: 12px; background: linear-gradient(135deg,#009e91,var(--cisco-teal)); color:#fff; box-shadow:0 3px 12px rgba(0,194,179,0.28); }
+    .btn-teal:hover    { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,194,179,0.38); }
+    .btn-orange  { padding: 9px 18px; font-size: 12px; background: linear-gradient(135deg,#c85a00,var(--cisco-orange)); color:#fff; box-shadow:0 3px 12px rgba(255,115,0,0.28); }
+    .btn-orange:hover  { transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,115,0,0.38); }
+    .btn-violet  { padding: 9px 18px; font-size: 12px; background: linear-gradient(135deg,#5a4080,var(--cisco-violet)); color:#fff; box-shadow:0 3px 12px rgba(123,94,167,0.28); }
+    .btn-violet:hover  { transform:translateY(-2px); box-shadow:0 6px 20px rgba(123,94,167,0.38); }
+    .btn-outline { padding: 9px 18px; font-size: 12px; background: transparent; color: var(--cisco-blue); border: 2px solid var(--cisco-blue); }
+    .btn-outline:hover { background: var(--cisco-blue-lt); transform: translateY(-1px); }
+    .btn-ghost   { padding: 9px 18px; font-size: 12px; background: transparent; color: var(--muted); border: 1px solid var(--border2); }
+    .btn-ghost:hover   { color: var(--text); border-color: var(--muted); transform: translateY(-1px); }
+
+    .btn .spin {
+      display: none; width: 15px; height: 15px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin-kf 0.6s linear infinite;
+    }
+    .btn.loading .btn-lbl { display: none; }
+    .btn.loading .spin    { display: block; }
+
+    /* ── STATS ── */
+    .stats-grid { display: none; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+    .stats-grid.show { display: grid; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 18px; display: flex; align-items: center; gap: 14px;
+      box-shadow: var(--shadow-sm);
+      opacity: 0; transform: translateY(24px) scale(0.96);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .stat-card.in { animation: stat-pop 0.65s var(--spring) forwards; }
+    .stat-card:hover { transform: translateY(-4px) !important; box-shadow: var(--shadow-lg); }
+    @keyframes stat-pop {
+      0%   { opacity:0; transform:translateY(30px) scale(0.94); }
+      60%  { opacity:1; transform:translateY(-5px) scale(1.02); }
+      100% { opacity:1; transform:translateY(0) scale(1); }
+    }
+    .stat-ico { width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+    .si-b{background:var(--cisco-blue-lt);color:var(--cisco-blue);}
+    .si-t{background:var(--cisco-teal-lt);color:var(--cisco-teal);}
+    .si-g{background:var(--cisco-green-lt);color:var(--cisco-green);}
+    .si-o{background:var(--cisco-orange-lt);color:var(--cisco-orange);}
+    .stat-num { display:block;font-size:2rem;font-weight:900;color:var(--cisco-blue-dk);font-family:var(--mono);letter-spacing:-1.5px;line-height:1; }
+    .stat-lbl { font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-top:3px; }
+
+    /* ── CHART SECTION ── */
+    .chart-section { display: none; }
+    .chart-section.show { display: block; }
+
+    .chart-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 14px;
+    }
+    .chart-title-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; font-weight: 800; color: var(--cisco-blue-dk);
+    }
+    .chart-title-ico {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--cisco-blue-lt), var(--cisco-teal-lt));
+      display: flex; align-items: center; justify-content: center; color: var(--cisco-blue);
+    }
+
+    /* Controls */
+    .controls-row {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 300px; }
+    .search-ico  { position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none; }
+    .search-input {
+      width:100%;padding:9px 34px 9px 34px;font-family:var(--sans);font-size:12px;font-weight:600;
+      background:var(--surface);border:1.5px solid var(--border2);border-radius:9px;
+      color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+    }
+    .search-input::placeholder { color:var(--muted);font-weight:400; }
+    .search-input:focus { border-color:var(--cisco-blue);box-shadow:0 0 0 3px rgba(4,159,217,0.12); }
+    .search-clear {
+      position:absolute;right:10px;top:50%;transform:translateY(-50%);
+      background:none;border:none;cursor:pointer;color:var(--muted);padding:2px;
+      display:none;border-radius:4px;transition:color 0.15s;
+    }
+    .search-clear:hover { color:var(--text); }
+    .search-clear.show  { display:block; }
+    .match-badge {
+      font-family:var(--mono);font-size:10px;font-weight:600;
+      color:var(--cisco-blue-mid);background:var(--cisco-blue-lt);
+      border:1px solid rgba(4,159,217,0.2);border-radius:6px;padding:4px 10px;display:none;
+    }
+    .match-badge.show { display:inline-block; }
+    .sort-select {
+      padding:9px 14px;font-family:var(--sans);font-size:12px;font-weight:600;
+      background:var(--surface);border:1.5px solid var(--border2);border-radius:9px;
+      color:var(--text2);cursor:pointer;outline:none;transition:border-color 0.2s;
+    }
+    .sort-select:focus { border-color:var(--cisco-blue); }
+    .toggle-group {
+      display:flex;background:var(--bg);border:1.5px solid var(--border2);
+      border-radius:9px;padding:3px;gap:2px;
+    }
+    .tgl-btn {
+      padding:6px 16px;font-family:var(--sans);font-size:12px;font-weight:700;
+      border:none;border-radius:7px;cursor:pointer;background:transparent;color:var(--muted);
+      transition:all 0.25s var(--smooth);
+    }
+    .tgl-btn.active { background:var(--cisco-blue);color:#fff;box-shadow:0 2px 10px rgba(4,159,217,0.35); }
+    .tgl-btn:hover:not(.active) { background:var(--cisco-blue-lt);color:var(--cisco-blue); }
+
+    /* Export row */
+    .export-row { display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px; }
+    .export-lbl { font-family:var(--mono);font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase; }
+
+    /* ── HORIZONTAL CHART CARD ── */
+    .chart-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: var(--shadow-md);
+      overflow: hidden; margin-bottom: 20px; position: relative;
+    }
+    .chart-card-stripe {
+      height: 4px;
+      background: linear-gradient(90deg, var(--cisco-blue-dk), var(--cisco-blue) 50%, var(--cisco-teal));
+    }
+    .chart-inner { padding: 20px 24px 12px; }
+
+    /* Scrollable chart area — key for dynamic height */
+    #chart-scroll {
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 72vh;
+      /* Custom scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+    #chart-scroll::-webkit-scrollbar { width: 6px; }
+    #chart-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    #chart-svg { display: block; width: 100%; }
+
+    /* Axis */
+    .y-label {
+      font-family: var(--sans); font-size: 12px; font-weight: 700;
+      fill: var(--text2); cursor: default;
+    }
+    .y-label.highlighted { fill: var(--cisco-blue); }
+    .x-axis text { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+    .x-axis line, .x-axis path { stroke: var(--border2); }
+    .x-axis .domain { display: none; }
+    .grid-v line { stroke: #ddeef7; stroke-dasharray: 3,3; }
+    .grid-v .domain { display: none; }
+
+    /* Bar segments */
+    .bar-seg {
+      cursor: pointer;
+      transition: filter 0.18s ease, opacity 0.28s ease;
+    }
+    .bar-seg.dimmed { opacity: 0.08; }
+    .bar-seg:not(.dimmed):hover {
+      filter: brightness(1.12) saturate(1.15) drop-shadow(0 2px 6px rgba(4,159,217,0.35));
+    }
+
+    /* Row hover band */
+    .row-band {
+      fill: transparent;
+      transition: fill 0.15s ease;
+    }
+    .row-band:hover { fill: rgba(4,159,217,0.04); }
+
+    /* Total label at end of bar */
+    .total-label {
+      font-family: var(--mono); font-size: 10px; font-weight: 600;
+      fill: var(--muted);
+    }
+
+    /* No results */
+    .no-results {
+      display: none; text-align: center; padding: 60px 20px;
+      color: var(--muted); font-family: var(--mono); font-size: 12px;
+    }
+    .no-results svg { margin: 0 auto 14px; display: block; opacity: 0.35; }
+    .no-results.show { display: block; }
+
+    /* ── GLASSMORPHISM TOOLTIP ── */
+    .glass-tip {
+      position: fixed; z-index: 9999;
+      /* Glassmorphism core */
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-top: 2.5px solid var(--cisco-blue);
+      border-radius: 14px;
+      padding: 14px 18px;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow:
+        0 8px 32px rgba(4,159,217,0.18),
+        0 2px 8px rgba(0,0,0,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      max-width: 290px;
+      /* Smooth follow */
+      transition: opacity 0.15s ease, transform 0.1s ease;
+      transform: translateY(6px) scale(0.97);
+    }
+    .glass-tip.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .tip-company-dot {
+      display: inline-block; width: 9px; height: 9px;
+      border-radius: 3px; margin-right: 7px; vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .tip-head {
+      font-size: 12px; font-weight: 800; color: var(--cisco-blue-dk);
+      margin-bottom: 9px; line-height: 1.3;
+      display: flex; align-items: flex-start; gap: 6px;
+    }
+    .tip-sep  { border: none; border-top: 1px solid rgba(4,159,217,0.15); margin: 8px 0; }
+    .tip-row  { display: flex; justify-content: space-between; gap: 18px; font-size: 11px; color: var(--text2); margin-top: 4px; }
+    .tip-val  { font-family: var(--mono); font-weight: 600; color: var(--cisco-blue); }
+    .tip-pct  { font-family: var(--mono); font-size: 10px; color: var(--muted); background: var(--cisco-blue-lt); border-radius: 4px; padding: 1px 6px; }
+
+    /* ── LEGEND ── */
+    .legend-wrap {
+      display: flex; flex-wrap: wrap; gap: 6px 12px;
+      padding: 14px 24px; border-top: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .leg-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 600; color: var(--text2);
+      cursor: pointer; padding: 5px 10px; border-radius: 7px;
+      border: 1px solid transparent;
+      transition: all 0.2s var(--smooth);
+      user-select: none;
+    }
+    .leg-item:hover { background: var(--bg); border-color: var(--border2); transform: translateY(-1px); }
+    .leg-item.hidden-co  { opacity: 0.3; text-decoration: line-through; }
+    .leg-item.highlighted { background: var(--cisco-blue-lt); border-color: var(--cisco-blue); color: var(--cisco-blue-dk); }
+    .leg-swatch { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; transition: transform 0.15s var(--spring); }
+    .leg-item:hover .leg-swatch { transform: scale(1.3) rotate(-5deg); }
+
+    /* ── JSON SECTION ── */
+    .json-section { display: none; }
+    .json-section.show { display: block; }
+    .sec-bar { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px; }
+    .sec-label { display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--cisco-blue-dk); }
+    .sec-label-ico { width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--cisco-blue-lt),var(--cisco-teal-lt));display:flex;align-items:center;justify-content:center;color:var(--cisco-blue); }
+    .sec-actions { display:flex;gap:8px;flex-wrap:wrap; }
+    .json-card { background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-md);margin-top:16px; }
+    .json-titlebar { display:flex;align-items:center;gap:6px;padding:11px 18px;background:var(--surface2);border-bottom:1px solid var(--border); }
+    .wdot{width:11px;height:11px;border-radius:50%;}
+    .wr{background:#ff5f57;}.wy{background:#febc2e;}.wg{background:#28c840;}
+    .json-fname{margin-left:6px;font-family:var(--mono);font-size:11px;color:var(--muted);}
+    #json-out{padding:22px;font-family:var(--mono);font-size:12px;line-height:1.9;max-height:440px;overflow-y:auto;white-space:pre;background:#f8fbfd;color:var(--text);}
+    #json-out::-webkit-scrollbar{width:5px;}
+    #json-out::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+    .j-k{color:#0550ae;font-weight:600;}.j-s{color:#116329;}.j-n{color:#cf222e;}.j-b{color:#8250df;}.j-p{color:var(--muted);}
+
+
+    /* ── USAGE DASHBOARD ── */
+    .usage-section { margin-top: 32px; }
+    .usage-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+    .usage-card { background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 16px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:12px;transition:transform 0.2s,box-shadow 0.2s;opacity:0;transform:translateY(18px); }
+    .usage-card.in { animation:stat-pop 0.6s var(--spring) forwards; }
+    .usage-card:hover { transform:translateY(-3px) !important; box-shadow:var(--shadow-lg); }
+    .usage-ico { width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+    .ui-blue{background:var(--cisco-blue-lt);color:var(--cisco-blue);}
+    .ui-teal{background:var(--cisco-teal-lt);color:var(--cisco-teal);}
+    .ui-green{background:var(--cisco-green-lt);color:var(--cisco-green);}
+    .ui-orange{background:var(--cisco-orange-lt);color:var(--cisco-orange);}
+    .ui-violet{background:#f0edf8;color:var(--cisco-violet);}
+    .usage-num { font-size:1.7rem;font-weight:900;color:var(--cisco-blue-dk);font-family:var(--mono);letter-spacing:-1px;line-height:1;display:block; }
+    .usage-lbl { font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px; }
+    .usage-sub { font-size:10px;font-family:var(--mono);color:var(--cisco-blue);margin-top:2px; }
+    .trend-row { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px; }
+    .trend-card { background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden; }
+    .trend-hdr { padding:14px 18px 10px;border-bottom:1px solid var(--border);font-size:12px;font-weight:800;color:var(--cisco-blue-dk);display:flex;align-items:center;gap:8px; }
+    .trend-hdr-ico { width:24px;height:24px;border-radius:6px;background:var(--cisco-blue-lt);color:var(--cisco-blue);display:flex;align-items:center;justify-content:center; }
+    .trend-body { padding:14px 18px 16px; }
+    .trend-svg  { width:100%;display:block; }
+    .recent-card { background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px; }
+    .recent-hdr { padding:14px 20px;background:linear-gradient(135deg,var(--cisco-blue-dk),var(--cisco-blue-mid));display:flex;align-items:center;justify-content:space-between; }
+    .recent-hdr-title { font-size:13px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px; }
+    .recent-hdr-ico   { width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;color:#fff; }
+    .recent-table     { width:100%;border-collapse:collapse; }
+    .recent-table th  { padding:10px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;background:var(--surface2);border-bottom:1px solid var(--border);font-family:var(--mono); }
+    .recent-table td  { padding:11px 16px;font-size:12px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:middle; }
+    .recent-table tr:last-child td { border-bottom:none; }
+    .recent-table tr:hover td { background:var(--cisco-blue-pale); }
+    .recent-table td:first-child { font-family:var(--mono);font-size:10px;color:var(--muted); }
+    .session-badge { display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;background:var(--cisco-blue-lt);color:var(--cisco-blue-mid);border:1px solid rgba(4,159,217,0.2);border-radius:5px;padding:2px 8px;margin:1px 2px; }
+    .num-badge { font-family:var(--mono);font-weight:700;color:var(--cisco-blue-dk);font-size:12px; }
+    .meta-row { display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px; }
+    .meta-item { background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;flex:1;min-width:180px;box-shadow:var(--shadow-sm); }
+    .meta-label { font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase; }
+    .meta-val   { font-size:12px;font-weight:700;color:var(--cisco-blue-dk);margin-top:4px;font-family:var(--mono); }
+    .refresh-btn { display:flex;align-items:center;gap:6px;padding:7px 14px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:var(--cisco-blue-lt);color:var(--cisco-blue-mid);border:1px solid rgba(4,159,217,0.25);border-radius:8px;cursor:pointer;transition:all 0.2s; }
+    .refresh-btn:hover { background:var(--cisco-blue);color:#fff; }
+    .refresh-btn.spinning svg { animation:spin-kf 0.7s linear infinite; }
+    .live-dot { width:7px;height:7px;border-radius:50%;background:var(--cisco-green);animation:pulse-dot 2s ease infinite;flex-shrink:0; }
+    .empty-row td { text-align:center;padding:28px;font-family:var(--mono);font-size:11px;color:var(--muted); }
+    @media(max-width:768px){.usage-grid{grid-template-columns:repeat(2,1fr);}.trend-row{grid-template-columns:1fr;}}
+
+    footer { position:relative;z-index:1;text-align:center;padding:28px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;background:var(--surface); }
+
+    /* Toast */
+    .toast {
+      position:fixed;bottom:28px;right:28px;z-index:9999;
+      background:linear-gradient(135deg,#009e91,var(--cisco-teal));
+      color:#fff;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:1.5px;
+      padding:12px 22px;border-radius:10px;box-shadow:0 8px 28px rgba(0,194,179,0.35);
+      transform:translateY(70px) scale(0.9);opacity:0;transition:all 0.35s var(--spring);
+    }
+    .toast.show{transform:translateY(0) scale(1);opacity:1;}
+
+    /* Export overlay */
+    .exp-overlay{display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,71,107,0.5);backdrop-filter:blur(6px);align-items:center;justify-content:center;}
+    .exp-overlay.show{display:flex;}
+    .exp-modal{background:var(--surface);border-radius:16px;padding:36px;text-align:center;box-shadow:0 24px 64px rgba(0,71,107,0.3);animation:spring-in 0.5s var(--spring) both;max-width:300px;width:90%;}
+    .exp-spin{width:48px;height:48px;margin:0 auto 18px;border:4px solid var(--cisco-blue-lt);border-top-color:var(--cisco-blue);border-radius:50%;animation:spin-kf 0.8s linear infinite;}
+    .exp-msg{font-size:14px;font-weight:700;color:var(--cisco-blue-dk);}
+    .exp-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px;}
+
+    /* Keyframes */
+    @keyframes spring-in{0%{opacity:0;transform:translateY(20px) scale(0.95);}60%{opacity:1;transform:translateY(-4px) scale(1.01);}100%{opacity:1;transform:translateY(0) scale(1);}}
+    @keyframes spin-kf{to{transform:rotate(360deg);}}
+
+    @media(max-width:768px){
+      .topnav,.hero,.container{padding-left:18px;padding-right:18px;}
+      .stats-grid{grid-template-columns:repeat(2,1fr);}
+      .controls-row{flex-direction:column;align-items:stretch;}
+      .search-wrap{max-width:100%;}
+    }
+  </style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="nav-left">
+    <svg width="76" height="38" viewBox="0 0 145 60" fill="none">
+      <rect x="0"  y="24" width="11" height="16" rx="2" fill="#049fd9"/>
+      <rect x="15" y="16" width="11" height="24" rx="2" fill="#049fd9"/>
+      <rect x="30" y="8"  width="11" height="32" rx="2" fill="#049fd9"/>
+      <rect x="45" y="16" width="11" height="24" rx="2" fill="#049fd9"/>
+      <rect x="60" y="24" width="11" height="16" rx="2" fill="#049fd9"/>
+      <text x="82" y="40" font-family="Arial,sans-serif" font-size="30" font-weight="bold" fill="#00476b" letter-spacing="-1">CISCO</text>
+    </svg>
+    <div class="nav-sep"></div>
+    <div class="nav-title">Cisco Live <span>Attendees Report</span></div>
+  </div>
+  <div class="nav-pill"><span class="pill-dot"></span>Analytics Dashboard</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Session Attendee Analytics
+  </div>
+  <h1 class="hero-title">Cisco Live<br/><span class="grad">Attendees Report</span></h1>
+  <p class="hero-sub">Upload CSV &nbsp;·&nbsp; Explore Horizontal Stream Chart &nbsp;·&nbsp; Export PNG / PDF</p>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- Upload card -->
+  <div class="card" style="animation:spring-in 0.65s 0.12s var(--spring) both;">
+    <div class="card-stripe"></div>
+    <div class="card-hdr">
+      <div class="card-hdr-ico">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 2v6h6M16 13H8M16 17H8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-hdr-title">Upload Attendee CSV</div>
+        <div class="card-hdr-sub">Required: SESSION CODE · FIRST NAME · LAST NAME · COMPANY NAME · JOB TITLE</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="csvFile" accept=".csv"/>
+        <div class="upload-ring">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="drop-title">Drop your CSV file here</div>
+        <div class="drop-hint">or click to browse &nbsp;·&nbsp; .csv files only</div>
+      </div>
+      <div class="file-ok" id="fileOk">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="fileLabel">Ready</span>
+      </div>
+      <div class="err-box" id="errBox"></div>
+      <button class="btn btn-primary" id="processBtn" disabled>
+        <span class="btn-lbl">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline-block;vertical-align:middle;margin-right:5px"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Generate Analytics Report
+        </span>
+        <div class="spin"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card" id="sc0"><div class="stat-ico si-b"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><span class="stat-num" id="sA">0</span><div class="stat-lbl">Total Attendees</div></div></div>
+    <div class="stat-card" id="sc1"><div class="stat-ico si-t"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><span class="stat-num" id="sT">0</span><div class="stat-lbl">Job Titles</div></div></div>
+    <div class="stat-card" id="sc2"><div class="stat-ico si-g"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><span class="stat-num" id="sC">0</span><div class="stat-lbl">Companies</div></div></div>
+    <div class="stat-card" id="sc3"><div class="stat-ico si-o"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><span class="stat-num" id="sS">0</span><div class="stat-lbl">Sessions</div></div></div>
+  </div>
+
+  <!-- Chart Section -->
+  <div class="chart-section" id="chartSection">
+
+    <div class="chart-topbar">
+      <div class="chart-title-row">
+        <div class="chart-title-ico">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M4 6h16M4 10h16M4 14h10M4 18h7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        Attendees by Job Title &amp; Company
+        <span style="font-size:11px;font-weight:600;color:var(--muted);font-family:var(--mono);margin-left:4px;" id="rowCountBadge"></span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-row">
+      <div class="search-wrap">
+        <span class="search-ico"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg></span>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search job titles…"/>
+        <button class="search-clear" id="searchClear" title="Clear"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+      </div>
+      <span class="match-badge" id="matchBadge"></span>
+      <select class="sort-select" id="sortSelect">
+        <option value="desc">Sort: Most Members</option>
+        <option value="name">Sort: A → Z</option>
+        <option value="asc">Sort: Fewest Members</option>
+      </select>
+      <div class="toggle-group">
+        <button class="tgl-btn active" id="btnStacked">Stacked</button>
+        <button class="tgl-btn"        id="btnGrouped">Grouped</button>
+      </div>
+    </div>
+
+    <!-- Export row -->
+    <div class="export-row">
+      <span class="export-lbl">Export</span>
+      <button class="btn btn-violet" id="exportPng">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export PNG
+      </button>
+      <button class="btn btn-orange" id="exportPdf">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export PDF
+      </button>
+    </div>
+
+    <!-- Chart card -->
+    <div class="chart-card" id="chartCard">
+      <div class="chart-card-stripe"></div>
+      <div class="chart-inner">
+        <div class="no-results" id="noResults">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+          No job titles match your search
+        </div>
+        <div id="chart-scroll"><svg id="chart-svg"></svg></div>
+      </div>
+      <div class="legend-wrap" id="legend"></div>
+    </div>
+
+  </div>
+
+  <!-- JSON Section -->
+  <div class="json-section" id="jsonSection">
+    <div class="sec-bar">
+      <div class="sec-label">
+        <div class="sec-label-ico"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M16 13H8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span id="outputLabel">output.json</span>
+      </div>
+      <div class="sec-actions">
+        <button class="btn btn-outline" id="copyBtn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>Copy JSON</button>
+        <button class="btn btn-teal"    id="dlBtn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 4v12m0 0l-4-4m4 4l4-4" stroke-linecap="round"/></svg>Download JSON</button>
+        <button class="btn btn-ghost"   id="rstBtn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round"/></svg>Reset</button>
+      </div>
+    </div>
+    <div class="json-card">
+      <div class="json-titlebar">
+        <div class="wdot wr"></div><div class="wdot wy"></div><div class="wdot wg"></div>
+        <span class="json-fname" id="jsonFname">output.json</span>
+      </div>
+      <div id="json-out"></div>
+    </div>
+  </div>
+
+</div>
+
+  <!-- ══════════════════════════════════════════════════
+       USAGE DASHBOARD
+  ═══════════════════════════════════════════════════ -->
+  <div class="usage-section" id="usageSection">
+
+    <div class="sec-bar">
+      <div class="sec-label">
+        <div class="sec-label-ico">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        App Usage &amp; Access Statistics
+        <span class="live-dot" title="Live data"></span>
+      </div>
+      <button class="refresh-btn" id="refreshStatsBtn" onclick="loadStats()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="usage-grid" id="usageGrid">
+      <div class="usage-card" id="uc0">
+        <div class="usage-ico ui-blue">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><span class="usage-num" id="uVisits">—</span><div class="usage-lbl">Page Visits</div></div>
+      </div>
+      <div class="usage-card" id="uc1">
+        <div class="usage-ico ui-teal">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><span class="usage-num" id="uUnique">—</span><div class="usage-lbl">Unique Visitors</div></div>
+      </div>
+      <div class="usage-card" id="uc2">
+        <div class="usage-ico ui-green">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 4v12m0 0l-4-4m4 4l4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><span class="usage-num" id="uFiles">—</span><div class="usage-lbl">Files Processed</div></div>
+      </div>
+      <div class="usage-card" id="uc3">
+        <div class="usage-ico ui-orange">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><span class="usage-num" id="uAttendees">—</span><div class="usage-lbl">Attendees Processed</div></div>
+      </div>
+    </div>
+
+    <!-- Meta timestamps -->
+    <div class="meta-row">
+      <div class="meta-item"><div class="meta-label">First Visit</div><div class="meta-val" id="mFirst">—</div></div>
+      <div class="meta-item"><div class="meta-label">Last Visit</div><div class="meta-val" id="mLast">—</div></div>
+      <div class="meta-item"><div class="meta-label">Last Upload</div><div class="meta-val" id="mUpload">—</div></div>
+    </div>
+
+    <!-- Trend charts row -->
+    <div class="trend-row">
+      <!-- 7-day visits bar chart -->
+      <div class="trend-card">
+        <div class="trend-hdr">
+          <div class="trend-hdr-ico">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          7-Day Visit Trend
+        </div>
+        <div class="trend-body">
+          <svg class="trend-svg" id="trendVisitsSvg" height="120"></svg>
+        </div>
+      </div>
+      <!-- Hourly distribution -->
+      <div class="trend-card">
+        <div class="trend-hdr">
+          <div class="trend-hdr-ico">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          Visits by Hour of Day
+        </div>
+        <div class="trend-body">
+          <svg class="trend-svg" id="trendHourlySvg" height="120"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent uploads table -->
+    <div class="recent-card">
+      <div class="recent-hdr">
+        <div class="recent-hdr-title">
+          <div class="recent-hdr-ico">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Recent Uploads (Last 20)
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="recent-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Filename</th>
+              <th>Session Codes</th>
+              <th>Attendees</th>
+              <th>Job Titles</th>
+            </tr>
+          </thead>
+          <tbody id="recentTbody">
+            <tr class="empty-row"><td colspan="5">No uploads yet — upload a CSV to get started.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /usageSection -->
+
+
+<footer>Cisco Live Attendees Report Generator &nbsp;·&nbsp; Flask + D3.js Horizontal Stream &nbsp;·&nbsp; © 2025 Cisco Systems</footer>
+
+<!-- Glassmorphism tooltip -->
+<div class="glass-tip" id="glassTip"></div>
+
+<div class="toast" id="toast">✓ Done!</div>
+
+<div class="exp-overlay" id="expOverlay">
+  <div class="exp-modal">
+    <div class="exp-spin"></div>
+    <div class="exp-msg" id="expMsg">Generating…</div>
+    <div class="exp-sub">Please wait</div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  CISCO PALETTE
+// ══════════════════════════════════════════════════════════
+const PALETTE = [
+  "#049fd9","#00c2b3","#6cc04a","#ff7300","#7b5ea7",
+  "#0272a2","#009e91","#4a9e2f","#c85a00","#5a4080",
+  "#33b8e8","#33d4c8","#8fd468","#ff9940","#9b7ec8",
+  "#00476b","#007a72","#2e6b18","#9e4000","#3d1f6b"
+];
+
+// ══════════════════════════════════════════════════════════
+//  SPRING PHYSICS
+// ══════════════════════════════════════════════════════════
+function springEase(t) {
+  // Underdamped spring: ζ=0.52, ω=13
+  const z = 0.52, w = 13;
+  const d = Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w * t) *
+    (Math.cos(d * w * t) + (z / d) * Math.sin(d * w * t));
+}
+
+// ══════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════
+let data          = null;
+let filename      = "output.json";
+let chartMode     = "stacked";
+let hiddenCos     = new Set();
+let highlightCo   = null;   // legend hover highlight
+let allCos        = [];
+let searchQ       = "";
+
+// ══════════════════════════════════════════════════════════
+//  FILE HANDLING
+// ══════════════════════════════════════════════════════════
+const dropZone   = document.getElementById("dropZone");
+const fileInput  = document.getElementById("csvFile");
+const processBtn = document.getElementById("processBtn");
+const fileOk     = document.getElementById("fileOk");
+const fileLabel  = document.getElementById("fileLabel");
+const errBox     = document.getElementById("errBox");
+
+dropZone.addEventListener("dragover",  e => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+dropZone.addEventListener("dragleave", ()=> dropZone.classList.remove("drag-over"));
+dropZone.addEventListener("drop", e => {
+  e.preventDefault(); dropZone.classList.remove("drag-over");
+  if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener("change", () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
+
+function setFile(f) {
+  if (!f.name.endsWith(".csv")) { showErr("Only .csv files are accepted."); return; }
+  fileInput._file = f;
+  fileLabel.textContent = f.name + " — ready";
+  fileOk.classList.add("show");
+  processBtn.disabled = false;
+  hideErr();
+}
+
+processBtn.addEventListener("click", async () => {
+  const file = fileInput._file || fileInput.files[0];
+  if (!file) return;
+  processBtn.classList.add("loading"); processBtn.disabled = true; hideErr();
+  const fd = new FormData(); fd.append("file", file);
+  try {
+    const res  = await fetch("/process", { method: "POST", body: fd });
+    const json = await res.json();
+    if (!res.ok || json.error) { showErr(json.error || "Unknown error."); return; }
+    data = json.data; filename = json.filename;
+    renderAll();
+  } catch(e) { showErr("Cannot reach server. Is Flask running?"); }
+  finally    { processBtn.classList.remove("loading"); processBtn.disabled = false; }
+});
+
+// ══════════════════════════════════════════════════════════
+//  ANIMATED COUNTER
+// ══════════════════════════════════════════════════════════
+function animCount(el, target, delay = 0) {
+  const dur = 900, start = performance.now() + delay;
+  (function frame(now) {
+    if (now < start) { requestAnimationFrame(frame); return; }
+    const t = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round((1 - Math.pow(1 - t, 4)) * target);
+    if (t < 1) requestAnimationFrame(frame); else el.textContent = target;
+  })(performance.now());
+}
+
+// ══════════════════════════════════════════════════════════
+//  RENDER ALL
+// ══════════════════════════════════════════════════════════
+function renderAll() {
+  const d = data;
+  const uCos = new Set(d.job_titles.flatMap(jt => jt.companies.map(c => c.company_name)));
+  allCos = [...uCos].sort();
+
+  document.getElementById("statsGrid").classList.add("show");
+  [[document.getElementById("sA"), d.total_attendees],
+   [document.getElementById("sT"), d.total_job_titles],
+   [document.getElementById("sC"), uCos.size],
+   [document.getElementById("sS"), d.session_codes.length]
+  ].forEach(([el, v], i) => {
+    const c = document.getElementById("sc" + i);
+    setTimeout(() => { c.classList.add("in"); animCount(el, v, 180); }, i * 85);
+  });
+
+  searchQ = "";
+  document.getElementById("searchInput").value = "";
+  document.getElementById("searchClear").classList.remove("show");
+  document.getElementById("matchBadge").classList.remove("show");
+  document.getElementById("chartSection").classList.add("show");
+  buildChart(true);
+
+  document.getElementById("outputLabel").textContent = filename;
+  document.getElementById("jsonFname").textContent   = filename;
+  document.getElementById("json-out").innerHTML      = syntaxHL(JSON.stringify(d, null, 4));
+  document.getElementById("jsonSection").classList.add("show");
+
+  setTimeout(() => document.getElementById("chartSection").scrollIntoView({ behavior: "smooth" }), 320);
+}
+
+// ══════════════════════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════════════════════
+const searchInput = document.getElementById("searchInput");
+const searchClear = document.getElementById("searchClear");
+const matchBadge  = document.getElementById("matchBadge");
+
+searchInput.addEventListener("input", () => {
+  searchQ = searchInput.value.trim().toLowerCase();
+  searchClear.classList.toggle("show", searchQ.length > 0);
+  buildChart(false);
+});
+searchClear.addEventListener("click", () => {
+  searchInput.value = ""; searchQ = "";
+  searchClear.classList.remove("show");
+  matchBadge.classList.remove("show");
+  buildChart(false);
+});
+
+document.getElementById("btnStacked").addEventListener("click", () => setMode("stacked"));
+document.getElementById("btnGrouped").addEventListener("click", () => setMode("grouped"));
+document.getElementById("sortSelect").addEventListener("change", () => buildChart(false));
+
+function setMode(m) {
+  chartMode = m;
+  document.getElementById("btnStacked").classList.toggle("active", m === "stacked");
+  document.getElementById("btnGrouped").classList.toggle("active", m === "grouped");
+  buildChart(false);
+}
+
+// ══════════════════════════════════════════════════════════
+//  BUILD HORIZONTAL CHART
+// ══════════════════════════════════════════════════════════
+function buildChart(isInitial) {
+  if (!data) return;
+
+  const noResults = document.getElementById("noResults");
+  const scroll    = document.getElementById("chart-scroll");
+  const svgEl     = document.getElementById("chart-svg");
+
+  const visCos = allCos.filter(c => !hiddenCos.has(c));
+
+  // Sort
+  const sortVal = document.getElementById("sortSelect").value;
+  let rows = [...data.job_titles];
+  if      (sortVal === "desc") rows.sort((a,b) => b.total_members - a.total_members);
+  else if (sortVal === "asc" ) rows.sort((a,b) => a.total_members - b.total_members);
+  else                         rows.sort((a,b) => a.job_title.localeCompare(b.job_title));
+
+  // Filter
+  if (searchQ) {
+    rows = rows.filter(r => r.job_title.toLowerCase().includes(searchQ));
+    matchBadge.textContent = `${rows.length} match${rows.length !== 1 ? "es" : ""}`;
+    matchBadge.classList.add("show");
+  } else {
+    matchBadge.classList.remove("show");
+  }
+
+  document.getElementById("rowCountBadge").textContent = rows.length ? `(${rows.length})` : "";
+
+  if (!rows.length) {
+    noResults.classList.add("show");
+    scroll.style.display = "none";
+    return;
+  }
+  noResults.classList.remove("show");
+  scroll.style.display = "block";
+
+  // ── Layout constants ──
+  const containerW  = scroll.clientWidth || 760;
+  const labelW      = 200;          // left label column
+  const totalLblW   = 38;           // space for total label on right
+  const marginTop   = 32;           // space for x-axis at top
+  const marginBot   = 12;
+  const marginLeft  = labelW;
+  const marginRight = totalLblW + 12;
+
+  // Dynamic row height based on mode
+  const ROW_H     = chartMode === "grouped" ? Math.max(18, Math.floor(visCos.length * 14) + 10) : 34;
+  const ROW_GAP   = 8;
+  const rowStride = ROW_H + ROW_GAP;
+
+  const chartH    = rows.length * rowStride + marginTop + marginBot;
+  const chartW    = containerW;
+  const plotW     = chartW - marginLeft - marginRight;
+
+  // Clamp scroll height for large datasets
+  scroll.style.maxHeight = Math.min(chartH + 20, window.innerHeight * 0.72) + "px";
+
+  // ── Data prep ──
+  const chartData = rows.map(r => {
+    const row = { jobTitle: r.job_title, total: r.total_members };
+    visCos.forEach(co => {
+      const f = r.companies.find(c => c.company_name === co);
+      row[co] = f ? f.total_members : 0;
+    });
+    return row;
+  });
+
+  const colorScale = d3.scaleOrdinal().domain(allCos).range(PALETTE);
+
+  // X scale — based on max stacked or individual value
+  const xMax = chartMode === "stacked"
+    ? d3.max(chartData, d => d3.sum(visCos, c => d[c]))
+    : d3.max(chartData, d => d3.max(visCos, c => d[c]));
+
+  const x = d3.scaleLinear().domain([0, (xMax || 1) * 1.1]).range([0, plotW]).nice();
+
+  // ── SVG ──
+  d3.select("#chart-svg").selectAll("*").remove();
+  const svg = d3.select("#chart-svg")
+    .attr("width", chartW)
+    .attr("height", chartH);
+
+  svg.append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "#fff");
+
+  const g = svg.append("g").attr("transform", `translate(${marginLeft},${marginTop})`);
+
+  // X axis at top
+  const xAxisG = g.append("g").attr("class", "x-axis")
+    .call(d3.axisTop(x).ticks(6).tickFormat(d3.format("d")).tickSize(-chartH + marginTop))
+    .call(a => a.select(".domain").remove())
+    .call(a => a.selectAll(".tick line")
+      .attr("stroke", "#ddeef7").attr("stroke-dasharray", "3,3").attr("y2", chartH - marginTop));
+
+  // Subtle vertical grid
+  g.append("g").attr("class","grid-v")
+    .call(d3.axisTop(x).ticks(6).tickFormat("").tickSize(-(chartH - marginTop)))
+    .call(a => a.select(".domain").remove())
+    .call(a => a.selectAll("line").attr("stroke","#e8f4fb").attr("stroke-dasharray","3,3"));
+
+  // Tooltip ref
+  const tip = document.getElementById("glassTip");
+  let tipTimeout;
+
+  function showTip(e, jobTitle, co, val, pct) {
+    const color = colorScale(co);
+    tip.innerHTML = `
+      <div class="tip-head">
+        <span class="tip-company-dot" style="background:${color}"></span>
+        ${jobTitle}
+      </div>
+      <hr class="tip-sep"/>
+      <div class="tip-row"><span>Company</span><span class="tip-val">${co}</span></div>
+      <div class="tip-row"><span>Members</span><span class="tip-val">${val} <span class="tip-pct">${pct}%</span></span></div>
+    `;
+    tip.classList.add("show");
+    positionTip(e);
+  }
+  function positionTip(e) {
+    const tw = 290, th = 110;
+    let lx = e.clientX + 18, ly = e.clientY - 20;
+    if (lx + tw > window.innerWidth  - 10) lx = e.clientX - tw - 18;
+    if (ly + th > window.innerHeight - 10) ly = e.clientY - th - 10;
+    tip.style.left = lx + "px";
+    tip.style.top  = ly + "px";
+  }
+  function hideTip() { tip.classList.remove("show"); }
+
+  // ── ROW GROUPS ──
+  const rowGs = g.selectAll(".row-g")
+    .data(chartData)
+    .join("g")
+      .attr("class", "row-g")
+      .attr("transform", (d, i) => `translate(0, ${i * rowStride})`);
+
+  // Hover band (full-width hit target)
+  rowGs.append("rect")
+    .attr("class", "row-band")
+    .attr("x", -marginLeft)
+    .attr("width", chartW)
+    .attr("height", rowStride - ROW_GAP + 4)
+    .attr("y", -2);
+
+  // ── Y labels (left side) ──
+  rowGs.append("text")
+    .attr("class", d => "y-label" + (searchQ && d.jobTitle.toLowerCase().includes(searchQ) ? " highlighted" : ""))
+    .attr("x", -12)
+    .attr("y", chartMode === "grouped" ? (visCos.length * 14) / 2 + 4 : ROW_H / 2 + 4)
+    .attr("text-anchor", "end")
+    .attr("dominant-baseline", "middle")
+    .text(d => d.jobTitle.length > 28 ? d.jobTitle.slice(0, 26) + "…" : d.jobTitle)
+    .append("title").text(d => d.jobTitle); // full text on hover
+
+  // ── STACKED horizontal bars ──
+  if (chartMode === "stacked") {
+    const stack = d3.stack().keys(visCos)(chartData);
+
+    stack.forEach((layer, li) => {
+      rowGs.each(function(rowD, ri) {
+        const seg = layer[ri];
+        const val = seg[1] - seg[0];
+        if (val <= 0) return;
+
+        const co    = layer.key;
+        const total = rowD.total || 1;
+        const pct   = Math.round((val / total) * 100);
+
+        d3.select(this).append("rect")
+          .attr("class", "bar-seg")
+          .attr("data-co", co)
+          .attr("y", 0)
+          .attr("height", ROW_H)
+          .attr("rx", 3)
+          .attr("fill", colorScale(co))
+          .attr("x", x(seg[0]))
+          .attr("width", 0)        // start at 0 for animation
+          .style("filter", "drop-shadow(0 1px 3px rgba(0,0,0,0.10))")
+          .on("mousemove", function(e) {
+            // apply dim if hovering over a specific company
+            showTip(e, rowD.jobTitle, co, val, pct);
+            positionTip(e);
+          })
+          .on("mouseleave", hideTip)
+        .transition()
+          .delay((isInitial ? 60 : 0) + ri * 42 + li * 8)
+          .duration(700)
+          .ease(t => springEase(Math.min(t, 1)))
+          .attr("width", Math.max(0, x(seg[1]) - x(seg[0])));
+      });
+    });
+
+  // ── GROUPED horizontal bars ──
+  } else {
+    const subH = Math.max(10, Math.floor(ROW_H / Math.max(visCos.length, 1)) - 2);
+    const subGap = 2;
+
+    visCos.forEach((co, ci) => {
+      rowGs.each(function(rowD, ri) {
+        const val = rowD[co] || 0;
+        if (val <= 0) return;
+        const total = rowD.total || 1;
+        const pct   = Math.round((val / total) * 100);
+
+        d3.select(this).append("rect")
+          .attr("class", "bar-seg")
+          .attr("data-co", co)
+          .attr("x", 0)
+          .attr("y", ci * (subH + subGap))
+          .attr("height", subH)
+          .attr("rx", 2)
+          .attr("fill", colorScale(co))
+          .attr("width", 0)
+          .style("filter", "drop-shadow(0 1px 3px rgba(0,0,0,0.08))")
+          .on("mousemove", function(e) {
+            showTip(e, rowD.jobTitle, co, val, pct);
+            positionTip(e);
+          })
+          .on("mouseleave", hideTip)
+        .transition()
+          .delay((isInitial ? 60 : 0) + ri * 40 + ci * 12)
+          .duration(680)
+          .ease(t => springEase(Math.min(t, 1)))
+          .attr("width", Math.max(0, x(val)));
+      });
+    });
+  }
+
+  // ── Total labels at right end of bar ──
+  rowGs.append("text")
+    .attr("class", "total-label")
+    .attr("x", 0)
+    .attr("y", ROW_H / 2 + 4)
+    .attr("dominant-baseline", "middle")
+    .style("opacity", 0)
+    .text(d => d.total)
+  .transition()
+    .delay((d, i) => (isInitial ? 100 : 0) + i * 42 + 500)
+    .duration(300)
+    .ease(d3.easeQuadOut)
+    .attr("x", d => x(d.total) + 6)
+    .style("opacity", 1);
+
+  // ── Apply legend highlight state after build ──
+  if (highlightCo) applyHighlight(highlightCo);
+
+  // ── LEGEND ──
+  buildLegend(colorScale);
+}
+
+// ══════════════════════════════════════════════════════════
+//  LEGEND with hover-highlight
+// ══════════════════════════════════════════════════════════
+function buildLegend(colorScale) {
+  const el = document.getElementById("legend");
+  el.innerHTML = "";
+
+  allCos.forEach(co => {
+    const item = document.createElement("div");
+    item.className = "leg-item"
+      + (hiddenCos.has(co)   ? " hidden-co"   : "")
+      + (highlightCo === co  ? " highlighted" : "");
+
+    item.innerHTML = `<div class="leg-swatch" style="background:${colorScale(co)}"></div><span>${co}</span>`;
+
+    // Click = toggle visibility
+    item.addEventListener("click", () => {
+      hiddenCos.has(co) ? hiddenCos.delete(co) : hiddenCos.add(co);
+      highlightCo = null;
+      buildChart(false);
+    });
+
+    // Hover = highlight this company across all rows
+    item.addEventListener("mouseenter", () => {
+      highlightCo = co;
+      applyHighlight(co);
+      // Update legend items
+      document.querySelectorAll(".leg-item").forEach(li => li.classList.remove("highlighted"));
+      item.classList.add("highlighted");
+    });
+    item.addEventListener("mouseleave", () => {
+      highlightCo = null;
+      clearHighlight();
+      document.querySelectorAll(".leg-item").forEach(li => li.classList.remove("highlighted"));
+    });
+
+    el.appendChild(item);
+  });
+}
+
+function applyHighlight(co) {
+  d3.selectAll(".bar-seg").each(function() {
+    const thisCo = d3.select(this).attr("data-co");
+    d3.select(this).classed("dimmed", thisCo !== co);
+  });
+}
+function clearHighlight() {
+  d3.selectAll(".bar-seg").classed("dimmed", false);
+}
+
+// Debounce resize
+let rTimer;
+window.addEventListener("resize", () => { clearTimeout(rTimer); rTimer = setTimeout(() => buildChart(false), 200); });
+
+// ══════════════════════════════════════════════════════════
+//  EXPORT PNG
+// ══════════════════════════════════════════════════════════
+document.getElementById("exportPng").addEventListener("click", async () => {
+  showExpOverlay("Capturing chart…");
+  await sleep(80);
+  try {
+    const el = document.getElementById("chartCard");
+    const canvas = await html2canvas(el, {
+      scale: 2.5, useCORS: true, backgroundColor: "#ffffff", logging: false,
+      onclone: doc => {
+        const hdr = doc.createElement("div");
+        hdr.style.cssText = "padding:13px 24px;background:linear-gradient(135deg,#00476b,#049fd9);color:#fff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;";
+        hdr.textContent = "Cisco Live — Attendees Report";
+        doc.getElementById("chartCard").prepend(hdr);
+      }
+    });
+    Object.assign(document.createElement("a"), {
+      href: canvas.toDataURL("image/png"),
+      download: filename.replace(".json","") + "_chart.png"
+    }).click();
+    showToast("PNG exported!");
+  } catch(e) { showToast("Export failed."); }
+  hideExpOverlay();
+});
+
+// ══════════════════════════════════════════════════════════
+//  EXPORT PDF
+// ══════════════════════════════════════════════════════════
+document.getElementById("exportPdf").addEventListener("click", async () => {
+  showExpOverlay("Generating PDF…");
+  await sleep(80);
+  try {
+    const { jsPDF } = window.jspdf;
+    const el = document.getElementById("chartCard");
+    const canvas = await html2canvas(el, {
+      scale: 2.5, useCORS: true, backgroundColor: "#ffffff", logging: false,
+      onclone: doc => {
+        const hdr = doc.createElement("div");
+        hdr.style.cssText = "padding:13px 24px;background:linear-gradient(135deg,#00476b,#049fd9);color:#fff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;";
+        hdr.textContent = "Cisco Live — Attendees Report";
+        doc.getElementById("chartCard").prepend(hdr);
+      }
+    });
+    const imgData = canvas.toDataURL("image/png");
+    const iW = canvas.width, iH = canvas.height;
+    const pdf = new jsPDF({ orientation: iW > iH ? "landscape" : "portrait", unit: "mm", format: "a4" });
+    const pW = pdf.internal.pageSize.getWidth();
+    const pH = pdf.internal.pageSize.getHeight();
+    const m  = 10;
+    pdf.setFillColor(0,71,107); pdf.rect(0,0,pW,18,"F");
+    pdf.setFillColor(4,159,217); pdf.rect(0,15,pW,3,"F");
+    pdf.setTextColor(255,255,255); pdf.setFontSize(13); pdf.setFont("helvetica","bold");
+    pdf.text("CISCO LIVE", m, 11);
+    pdf.setFontSize(9); pdf.setFont("helvetica","normal");
+    pdf.text("Attendees Analytics Report", m+38, 11);
+    pdf.setFontSize(7);
+    pdf.text("Generated: " + new Date().toLocaleString(), pW-m, 11, { align:"right" });
+    const aw = pW-m*2, ah = pH-28-m;
+    const ratio = Math.min(aw/iW, ah/iH);
+    pdf.addImage(imgData,"PNG",(pW-iW*ratio)/2, 22, iW*ratio, iH*ratio);
+    pdf.setFillColor(240,246,250); pdf.rect(0,pH-10,pW,10,"F");
+    pdf.setTextColor(107,143,166); pdf.setFontSize(7);
+    pdf.text("© 2025 Cisco Systems — Cisco Live Analytics Dashboard", pW/2, pH-3.5, { align:"center" });
+    pdf.save(filename.replace(".json","") + "_chart.pdf");
+    showToast("PDF exported!");
+  } catch(e) { showToast("Export failed."); }
+  hideExpOverlay();
+});
+
+// ══════════════════════════════════════════════════════════
+//  JSON ACTIONS
+// ══════════════════════════════════════════════════════════
+document.getElementById("copyBtn").addEventListener("click", () => {
+  navigator.clipboard.writeText(JSON.stringify(data, null, 4)).then(() => showToast("Copied to clipboard!"));
+});
+document.getElementById("dlBtn").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(data, null, 4)], { type:"application/json" });
+  const url  = URL.createObjectURL(blob);
+  Object.assign(document.createElement("a"), { href: url, download: filename }).click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById("rstBtn").addEventListener("click", () => {
+  data = null; filename = "output.json";
+  hiddenCos.clear(); highlightCo = null; allCos = []; searchQ = "";
+  fileInput.value = ""; fileInput._file = null;
+  fileOk.classList.remove("show"); processBtn.disabled = true;
+  ["statsGrid","chartSection","jsonSection"].forEach(id =>
+    document.getElementById(id).classList.remove("show"));
+  ["sc0","sc1","sc2","sc3"].forEach(id => {
+    const c = document.getElementById(id);
+    c.classList.remove("in"); c.style.opacity = "0"; c.style.transform = "translateY(24px) scale(0.96)";
+  });
+  d3.select("#chart-svg").selectAll("*").remove();
+  document.getElementById("legend").innerHTML = "";
+  searchInput.value = ""; searchClear.classList.remove("show"); matchBadge.classList.remove("show");
+  hideErr(); window.scrollTo({ top:0, behavior:"smooth" });
+});
+
+// ══════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════
+function showErr(m) { errBox.textContent = "⚠  " + m; errBox.classList.add("show"); }
+function hideErr()  { errBox.classList.remove("show"); }
+let _toast;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = "✓  " + msg; t.classList.add("show");
+  clearTimeout(_toast); _toast = setTimeout(() => t.classList.remove("show"), 2800);
+}
+function showExpOverlay(msg) { document.getElementById("expMsg").textContent = msg; document.getElementById("expOverlay").classList.add("show"); }
+function hideExpOverlay()    { document.getElementById("expOverlay").classList.remove("show"); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function syntaxHL(json) {
+  return json.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?|[{}\[\],:])/g, m => {
+      let c = "j-n";
+      if (/^"/.test(m))             c = /:$/.test(m) ? "j-k" : "j-s";
+      else if (/true|false/.test(m)) c = "j-b";
+      else if (/null/.test(m))       c = "j-p";
+      else if (/[{}\[\],:]/.test(m)) c = "j-p";
+      return `<span class="${c}">${m}</span>`;
+    });
+}
+// ══════════════════════════════════════════════════════════
+//  USAGE STATS DASHBOARD
+// ══════════════════════════════════════════════════════════
+async function loadStats() {
+  const btn = document.getElementById("refreshStatsBtn");
+  btn.classList.add("spinning");
+
+  try {
+    const res  = await fetch("/stats");
+    const s    = await res.json();
+
+    // ── KPI counters ──
+    animCount(document.getElementById("uVisits"),    s.total_page_visits,         0);
+    animCount(document.getElementById("uUnique"),    s.unique_visitors,           60);
+    animCount(document.getElementById("uFiles"),     s.total_files_processed,     120);
+    animCount(document.getElementById("uAttendees"), s.total_attendees_processed, 180);
+
+    // ── Staggered card entrance ──
+    ["uc0","uc1","uc2","uc3"].forEach((id, i) => {
+      const c = document.getElementById(id);
+      c.classList.remove("in");
+      void c.offsetWidth; // reflow
+      setTimeout(() => c.classList.add("in"), i * 80);
+    });
+
+    // ── Meta timestamps ──
+    document.getElementById("mFirst").textContent  = s.first_visit  || "—";
+    document.getElementById("mLast").textContent   = s.last_visit   || "—";
+    document.getElementById("mUpload").textContent = s.last_upload  || "—";
+
+    // ── 7-day trend chart ──
+    renderTrendChart("trendVisitsSvg", s.trend_7days, "visits", "#049fd9", "uploads", "#00c2b3");
+
+    // ── Hourly chart ──
+    renderHourlyChart("trendHourlySvg", s.hourly_distribution);
+
+    // ── Recent uploads table ──
+    renderRecentTable(s.recent_uploads);
+
+  } catch(e) {
+    console.error("Stats load failed:", e);
+  }
+
+  btn.classList.remove("spinning");
+}
+
+// ── Mini D3 trend bar chart ──
+function renderTrendChart(svgId, trend, key1, color1, key2, color2) {
+  const el  = document.getElementById(svgId);
+  const W   = el.parentElement.clientWidth - 36;
+  const H   = 110;
+  const mb  = 24, mt = 8, ml = 28, mr = 8;
+  const pw  = W - ml - mr;
+  const ph  = H - mt - mb;
+
+  d3.select("#" + svgId).selectAll("*").remove();
+  const svg = d3.select("#" + svgId).attr("width", W).attr("height", H);
+  const g   = svg.append("g").attr("transform", `translate(${ml},${mt})`);
+
+  const x = d3.scaleBand().domain(trend.map(d => d.label)).range([0,pw]).padding(0.28);
+  const maxVal = d3.max(trend, d => Math.max(d[key1]||0, d[key2]||0)) || 1;
+  const y = d3.scaleLinear().domain([0, maxVal * 1.15]).range([ph, 0]).nice();
+
+  // Grid
+  y.ticks(3).forEach(t => {
+    g.append("line").attr("x1",0).attr("x2",pw).attr("y1",y(t)).attr("y2",y(t))
+      .attr("stroke","#ddeef7").attr("stroke-dasharray","3,3");
+  });
+
+  // X labels
+  g.append("g").attr("transform",`translate(0,${ph})`)
+    .call(d3.axisBottom(x).tickSize(0))
+    .call(a => a.select(".domain").remove())
+    .selectAll("text").style("font-size","9px").style("fill","var(--muted)").style("font-family","var(--mono)");
+
+  // Y axis
+  g.append("g")
+    .call(d3.axisLeft(y).ticks(3).tickFormat(d3.format("d")).tickSize(0))
+    .call(a => a.select(".domain").remove())
+    .selectAll("text").style("font-size","9px").style("fill","var(--muted)").style("font-family","var(--mono)");
+
+  const bw = x.bandwidth() / 2 - 1;
+
+  // Bars key1 (visits)
+  g.selectAll(".b1").data(trend).join("rect")
+    .attr("class","b1")
+    .attr("x",     d => x(d.label))
+    .attr("width", bw).attr("rx", 2).attr("fill", color1)
+    .attr("y", ph).attr("height", 0)
+    .transition().duration(550).delay((d,i) => i*40)
+    .ease(t => springEase(Math.min(t,1)))
+    .attr("y",      d => y(d[key1]||0))
+    .attr("height", d => Math.max(0, ph - y(d[key1]||0)));
+
+  // Bars key2 (uploads)
+  g.selectAll(".b2").data(trend).join("rect")
+    .attr("class","b2")
+    .attr("x",     d => x(d.label) + bw + 2)
+    .attr("width", bw).attr("rx", 2).attr("fill", color2).attr("opacity", 0.8)
+    .attr("y", ph).attr("height", 0)
+    .transition().duration(550).delay((d,i) => i*40 + 20)
+    .ease(t => springEase(Math.min(t,1)))
+    .attr("y",      d => y(d[key2]||0))
+    .attr("height", d => Math.max(0, ph - y(d[key2]||0)));
+
+  // Legend
+  const lg = svg.append("g").attr("transform",`translate(${ml},${H-6})`);
+  lg.append("rect").attr("width",8).attr("height",8).attr("rx",2).attr("fill",color1).attr("y",-8);
+  lg.append("text").attr("x",11).attr("y",-1).style("font-size","9px").style("fill","var(--muted)").style("font-family","var(--mono)").text("Visits");
+  lg.append("rect").attr("x",52).attr("width",8).attr("height",8).attr("rx",2).attr("fill",color2).attr("y",-8);
+  lg.append("text").attr("x",63).attr("y",-1).style("font-size","9px").style("fill","var(--muted)").style("font-family","var(--mono)").text("Uploads");
+}
+
+// ── Hourly distribution chart ──
+function renderHourlyChart(svgId, hourly) {
+  const el  = document.getElementById(svgId);
+  const W   = el.parentElement.clientWidth - 36;
+  const H   = 110;
+  const mb  = 24, mt = 8, ml = 28, mr = 8;
+  const pw  = W - ml - mr;
+  const ph  = H - mt - mb;
+
+  d3.select("#" + svgId).selectAll("*").remove();
+  const svg = d3.select("#" + svgId).attr("width", W).attr("height", H);
+  const g   = svg.append("g").attr("transform", `translate(${ml},${mt})`);
+
+  const x   = d3.scaleBand().domain(hourly.map(d => d.hour)).range([0,pw]).padding(0.15);
+  const yMax = d3.max(hourly, d => d.visits) || 1;
+  const y   = d3.scaleLinear().domain([0, yMax*1.15]).range([ph,0]).nice();
+
+  y.ticks(3).forEach(t => {
+    g.append("line").attr("x1",0).attr("x2",pw).attr("y1",y(t)).attr("y2",y(t))
+      .attr("stroke","#ddeef7").attr("stroke-dasharray","3,3");
+  });
+
+  // Show every 4th hour label
+  const xAxis = d3.axisBottom(x).tickFormat((d,i) => i%4===0 ? d : "").tickSize(0);
+  g.append("g").attr("transform",`translate(0,${ph})`).call(xAxis)
+    .call(a => a.select(".domain").remove())
+    .selectAll("text").style("font-size","9px").style("fill","var(--muted)").style("font-family","var(--mono)");
+
+  g.append("g")
+    .call(d3.axisLeft(y).ticks(3).tickFormat(d3.format("d")).tickSize(0))
+    .call(a => a.select(".domain").remove())
+    .selectAll("text").style("font-size","9px").style("fill","var(--muted)").style("font-family","var(--mono)");
+
+  // Color scale: cool blue in off-hours, warm orange at peak
+  const peakVal = yMax;
+  g.selectAll(".hbar").data(hourly).join("rect")
+    .attr("class","hbar")
+    .attr("x",     d => x(d.hour))
+    .attr("width", x.bandwidth()).attr("rx", 2)
+    .attr("fill",  d => d3.interpolate("#b8dff5","#ff7300")(d.visits / (peakVal || 1)))
+    .attr("y", ph).attr("height", 0)
+    .transition().duration(500).delay((d,i) => i*18)
+    .ease(t => springEase(Math.min(t,1)))
+    .attr("y",      d => y(d.visits))
+    .attr("height", d => Math.max(0, ph - y(d.visits)));
+}
+
+// ── Recent uploads table ──
+function renderRecentTable(uploads) {
+  const tbody = document.getElementById("recentTbody");
+  tbody.innerHTML = "";
+
+  if (!uploads || uploads.length === 0) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No uploads yet.</td></tr>`;
+    return;
+  }
+
+  uploads.forEach((u, i) => {
+    const tr = document.createElement("tr");
+    tr.style.animationDelay = (i * 30) + "ms";
+    const codes = (u.session_codes || []).map(c => `<span class="session-badge">${c}</span>`).join(" ");
+    tr.innerHTML = `
+      <td>${u.time}</td>
+      <td style="font-weight:600;color:var(--text);">${u.filename}</td>
+      <td>${codes || "—"}</td>
+      <td><span class="num-badge">${u.attendees}</span></td>
+      <td><span class="num-badge">${u.job_titles}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Auto-load stats on page load & refresh every 30s
+window.addEventListener("load", () => {
+  loadStats();
+  setInterval(loadStats, 30000);
+});
+
+</script>
+</body>
+</html>
