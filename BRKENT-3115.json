@@ -1,0 +1,1643 @@
+{
+    "generated_at": "2026-02-20 10:00:13",
+    "source_file": "BRKENT-3115.csv",
+    "session_codes": [
+        "BRKENT-3115"
+    ],
+    "total_attendees": 194,
+    "total_job_titles": 124,
+    "job_titles": [
+        {
+            "job_title": "Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ORANGE BELGIUM HASSELT",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "CCIE Collaboration Expert",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "AXIANS OUTSOURCING PARIS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "CEO",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Ceres Networking Solutions GmbH",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Chief Consultant",
+            "total_companies": 2,
+            "total_members": 2,
+            "companies": [
+                {
+                    "company_name": "ATEA AS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "ATEA BERGEN AS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Chief Network Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "DANSKE BANK AS LIETUVOS FILIALAS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Cloud Architect",
+            "total_companies": 2,
+            "total_members": 2,
+            "companies": [
+                {
+                    "company_name": "Vodafone Group Services GmbH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "cgi it uk ltd",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Consultan",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "DEUTSCHE TELEKOM AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Consultant",
+            "total_companies": 2,
+            "total_members": 2,
+            "companies": [
+                {
+                    "company_name": "CONSCIA NORGE AS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "OPEN LINE BV",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Customer Delivery Engineering Technical Leader",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Cisco",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Customer Lead Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "conscia",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Customer Solutions Design Practitioner",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BT",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Cybersecurity Team Lead",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "teamsystem",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Data Center Specialist",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "MVSR",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Design Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Shell",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "DevOps Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SAP SE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Dr.",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "TELIA CYGATE AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "ENGINEER",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Conscia Ireland",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Engineer",
+            "total_companies": 2,
+            "total_members": 2,
+            "companies": [
+                {
+                    "company_name": "PROXIMUS SA NV",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "TELEFONICA GLOBAL SOLUTIONS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Engineer - B2B Data Engineering",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Telenet",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Engineer Senior Telecom and DataCenter",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NTT FRANCE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Engineering Specialist",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "FedEx",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Global Network Architect",
+            "total_companies": 2,
+            "total_members": 2,
+            "companies": [
+                {
+                    "company_name": "Concentrix",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "JOYSON SAFETY SYSTEMS ASCHAFFENBURG GMBH",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Global Network Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Royal Unibrew A/S",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Head of IT Infrastructure, Data Science & AI",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Bekaert",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Head of OPS Network team",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BULATSA TPPD",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "INGENIEUR TELECOM",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BNP PARIBAS PARTNERS FOR INNOVATION",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IP engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ORANGE EASTVIEW",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BWI SERVICES",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ALDI INTERNATIONAL SERVICES GMBH & CO. OHG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT INFRASTRUCTURE SPECIALIST - SENIOR",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ROBERT BOSCH SP Z O O",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT Manager - Network Performance Assurance",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Johnson & Johnson",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT Manager connectivity",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SILTRONIC AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT Security Systems Administrator",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "EU Agency for the Space Programme",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT System Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "DATEV EG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "IT specialist",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Airbus",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Infra Transformation Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "DE ZORDI FILIPPO",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Int\u00e9grator",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Exaprobe",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "LAN Campus & DC Network Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Stellantis",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Lead Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Deutsche Telekom Gesch\u00e4ftskunden GmbH",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Lead Network Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "TSYS INTERNATIONAL MANAGEMENT LIMITED",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Lead Solution Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Helvetia Baloise Insurances",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "NETWORK ENGINEER",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SPACE HELLAS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "NMC Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Ellevio AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Naetverkskonsult",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Telia Cygate AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network & Security Pre-Sales",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "IMS NETWORKS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Admin",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Commerzbank AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Administrator",
+            "total_companies": 3,
+            "total_members": 3,
+            "companies": [
+                {
+                    "company_name": "DFS DEUTSCHE FLUGSICHERUNG GMBH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "POLSKIE GORNICTWO NAFTOWE I GAZOWNICTWO S A",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "SERVICIUL DE TELECOMUNICATII SPECIALE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Aministrator",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "CISR",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Analyst",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SOCIETE GENERALE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Architect",
+            "total_companies": 14,
+            "total_members": 14,
+            "companies": [
+                {
+                    "company_name": "ABB",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "AUMOVIO Germany GmbH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Axians",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "BNP PARIBAS PARTNERS FOR INNOVATION",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "BWI INFORMATIONSTECHNIK GMBH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "CENTER PARCS U K GROUP LTD",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "DATAPORT",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "DPM Chelopech EAD",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Eviny Digital AS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "FedEx",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Harman",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "IPCAP CONSULTING",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "SAP",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "UCB Pharma",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Controlware",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Designer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Fervid B.V.",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Engineer",
+            "total_companies": 25,
+            "total_members": 27,
+            "companies": [
+                {
+                    "company_name": "BNP PARIBAS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "BUNDESRECHENZENTRUM GMBH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "CONXION BV",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Commerzbank AG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "FISERV",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "GARANTI BBVA",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "General Dynamics Information Technology",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "HALKBANK",
+                    "total_members": 3
+                },
+                {
+                    "company_name": "Haugaland Kraft Fiber AS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "ING Hubs Poland",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "NETCLOUD AG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "NOS COMUNICACOES SA",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Nike",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "OESTERREICHISCHE RUNDFUNKSENDER GMBH & CO. KG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "ORANGE",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "ORANGE CYBERDEFENSE",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "RAITEC GMBH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "RAITEC GmbH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "SIMAC NV",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "SUNRISE GMBH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Self",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "TDC Erhverv A/S",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Tycom Digital Solutions Gmbh - Swarovski Group",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "VBS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "srgssr",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Engineer Managed Services",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NETCLOUD AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Expert",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ENGIE INFORMATION ET TECHNOLOGIES",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Expert / Senior Systems Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "D. Swarovski KG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Manager",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Inpost Technologies",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Professional",
+            "total_companies": 2,
+            "total_members": 3,
+            "companies": [
+                {
+                    "company_name": "MTU AERO ENGINES AG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "PAN DACOM NETWORKING AG",
+                    "total_members": 2
+                }
+            ]
+        },
+        {
+            "job_title": "Network Security Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "WIFIRST",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Solution Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "A1 BG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network System Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Cooper Standard Automotive",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network Technician",
+            "total_companies": 2,
+            "total_members": 2,
+            "companies": [
+                {
+                    "company_name": "Agency for Governmental IT",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "INTILITY AS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network and Security Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NOMIOS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ONE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Network engineer",
+            "total_companies": 2,
+            "total_members": 2,
+            "companies": [
+                {
+                    "company_name": "Fedex",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "SIRTI DIGITAL SOLUTION SPA",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Networkengineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Lidl Belgium GmbH & Co KG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Networking Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Tele2 Sverige AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Networking Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "A1 TELEKOM AUSTRIA AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Operations Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Gamma",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Operations Manager",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "DEUTSCHE TELEKOM AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "PSGE Technology Manager",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Amazon Protective Services",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Principal Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "UNIVERSITY OF VIRGINIA",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Principal Engineer | Enterprise Networking",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SMARTNS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Principal Network Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "LEIDOS INNOVATIONS UK LTD",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Principal Technology Expert",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SAP Nederland Holding B.V.",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Principle Infrastructure Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Swissgrid",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Product Lead",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SPAR",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Production Lead Network",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Telenor Norge",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "SRE",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "TELENET BVBA",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Security Technik Specialist",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Deutsche Telekom IT & Telecommunications Slovakia s.r.o.",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Cloud Architect \u2013 SaaS & Infrastructure",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Entrust",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ATEA SVERIGE AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Design Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SHELL",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior IP Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "TELIA FINLAND OYJ",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Manager Infrastructure Services",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BT",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Network Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "CYGATE AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Network Engeneer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "STT srl",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Network Engineer",
+            "total_companies": 9,
+            "total_members": 9,
+            "companies": [
+                {
+                    "company_name": "BLEND TECHNOLOGIES SA",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "ECONIS AG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "EmbedIT s.r.o.",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Eurobank",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "NETCLOUD AG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "SUNRISE",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "TELE AG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "WARPCOM SERVICES SA",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "WHITE & CASE LLP",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Network Engineer Lead",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NIKE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Network Operations Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "DELOITTE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Ntwrk engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NTWRKPEOPLE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Security Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "CONSCIA NORGE AS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Service Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NCIA",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Solution Architect Manager, SD-WAN",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BT Plc",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Solutions Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BT GLOBAL EUROPE BV",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior System Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NTS NETZWERK TELEKOM SERVICE AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Systems Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NTS Italy S.r.l.",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior Technical Consultant Network Solutions",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "CONTROLWARE GMBH",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Senior WAN Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BWI GMBH",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Solution Architect",
+            "total_companies": 3,
+            "total_members": 3,
+            "companies": [
+                {
+                    "company_name": "ALLIANZ TECHNOLOGY SE",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Atea AS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "KPN",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Solutions Architect",
+            "total_companies": 3,
+            "total_members": 3,
+            "companies": [
+                {
+                    "company_name": "Norsk Hydro ASA",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "TELENOR NORWAY",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "TRUSTMARQUE SOLUTIONS LTD",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Sr Network Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "CONSCIA SVERIGE AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Sr Networking Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "TELIA CYGATE AB",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Sr. Tech Lead - B2B",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Sunrise GmbH",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "System Analyst",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "AIRFRANCE",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "System Engineer",
+            "total_companies": 5,
+            "total_members": 5,
+            "companies": [
+                {
+                    "company_name": "ALEF NULA AS",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Amazon",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "DEUTSCHE TELEKOM AG",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "NETCOM BW GMBH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "SVA LEIPZIG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "System administrator",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "NATIONAL CUSTOMS AGENCY",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "System specialist",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Soitron s.r.o.",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Systems Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Cisco",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Systems Engineer",
+            "total_companies": 5,
+            "total_members": 5,
+            "companies": [
+                {
+                    "company_name": "Cisco",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "Conscia Nederland B.V.",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "KBC Groep",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "NTS DEUTSCHLAND GMBH",
+                    "total_members": 1
+                },
+                {
+                    "company_name": "NTS NETZWERK TELEKOM SERVICE AG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Systems Manager",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Amazon.com, Inc.",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Systems engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "KBC Group",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "TPM",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Amazon",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Technical Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "COMPUTACENTER AG & CO.OHG",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Technical Manager",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Orange Business Germany",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Telecom Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "BNP PARIBAS",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Testcenter Architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ALDB GMBH",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Trainer & Consultant",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "ExperTeach",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "Voice Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Booking.com IT Services B.V.",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "WAN-Design Engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "SHELL ENERGY MARKETING AND TRADING INDIAPRIVATE LTD",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "WW SA Tech Lead - Networking",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "AMAZON WEB SERVICES",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "infrastructure Manager",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "Amazon",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "network architect",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "KYNDRYL",
+                    "total_members": 1
+                }
+            ]
+        },
+        {
+            "job_title": "network engineer",
+            "total_companies": 1,
+            "total_members": 1,
+            "companies": [
+                {
+                    "company_name": "AGRIAL",
+                    "total_members": 1
+                }
+            ]
+        }
+    ]
+}
